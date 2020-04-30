@@ -17,7 +17,6 @@ class CreateWorldLogsTable extends Migration
             $table->id();
             $table->string('ip')->unique();
             $table->string('location_name');
-            $table->string('geo_hash');
             $table->timestamps();
         });
     }
