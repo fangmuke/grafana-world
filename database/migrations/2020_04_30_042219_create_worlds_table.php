@@ -16,7 +16,6 @@ class CreateWorldsTable extends Migration
         Schema::create('worlds', function (Blueprint $table) {
             $table->id();
             $table->string('location_name');
-            $table->string('geo_hash');
             $table->tinyInteger('metric');
             $table->timestamps();
         });
