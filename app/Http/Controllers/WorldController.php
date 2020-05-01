@@ -7,12 +7,14 @@ use App\WorldLog;
 use GeoHash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class WorldController extends Controller
 {
     public function index(Request $request)
     {
         $ip = $request->ip() ?? $request->header('x-real-ip');
+        Log::info(json_encode($request->header()));
 
         $response = Http::get('http://api.map.baidu.com/location/ip', [
             'ak' => 'GC7Sc8TSzX89mqKOZ3QReqDNxbnKz8Ys',

@@ -61,7 +61,7 @@
 <div class="flex-center position-ref full-height">
     <div class="content">
         <div class="title m-b-md">
-            <a href="https://map.fangmuke.cn/d/ZcAoBd6Wk/world?panelId=2&fullscreen&orgId=1&from=now%2Fy&to=now">{{$message}}</a>
+            <a href="https://map.fangmuke.cn/d/ZcAoBd6Wk/world?panelId=2&fullscreen&orgId=1&from=now%2Fy&to=now&refresh=5s">{{$message}}</a>
         </div>
     </div>
 </div>
