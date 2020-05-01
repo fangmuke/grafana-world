@@ -7,14 +7,12 @@ use App\WorldLog;
 use GeoHash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class WorldController extends Controller
 {
     public function index(Request $request)
     {
-        $ip = $request->ip() ?? $request->header('x-real-ip');
-        Log::info(json_encode($request->header()));
+        $ip = $request->ip();
 
         $response = Http::get('http://api.map.baidu.com/location/ip', [
             'ak' => 'GC7Sc8TSzX89mqKOZ3QReqDNxbnKz8Ys',
@@ -23,13 +21,13 @@ class WorldController extends Controller
         ]);
 
         if (!$response->successful()) {
-            return view('message', ['message' => 'Error1']);
+            return view('message', ['message' => '垃圾百度地图，请求接口失败！']);
         }
 
         $data = $response->json();
 
         if ($data['status']) {
-            return view('message', ['message' => 'Error2']);
+            return view('message', ['message' => '垃圾百度地图，错误原因：'.$data['message']]);
         }
 
         $geoHash = GeoHash::encode($data['content']['point']['y'], $data['content']['point']['x']);
@@ -37,10 +35,10 @@ class WorldController extends Controller
 
         $exists = WorldLog::where('ip', $ip)->exists();
         if ($exists) {
-            return view('message', ['message' => 'Success']);
+            return view('message', ['message' => '已存在！勿重复请求，小水管！']);
         }
 
-        $worldLog = WorldLog::create(['ip' => $ip, 'location_name' => $locationName,]);
+        $worldLog = WorldLog::create(['ip' => $ip, 'location_name' => $locationName, 'header' => $request->header()]);
         if ($worldLog) {
             $world = World::where('geo_hash', $geoHash)->first();
 
@@ -50,9 +48,9 @@ class WorldController extends Controller
                 World::create(['location_name' => $locationName, 'geo_hash' => $geoHash, 'metric' => 1]);
             }
 
-            return view('message', ['message' => 'Success']);
+            return view('message', ['message' => '点击查看地图']);
         }
 
-        return view('message', ['message' => 'Error3']);
+        return view('message', ['message' => '你干了什么？？？']);
     }
 }
