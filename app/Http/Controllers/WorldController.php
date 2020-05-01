@@ -12,7 +12,7 @@ class WorldController extends Controller
 {
     public function index(Request $request)
     {
-        $ip = $request->ip();
+        $ip = $request->ip() ?? $request->header('x-real-ip');
 
         $response = Http::get('http://api.map.baidu.com/location/ip', [
             'ak' => 'GC7Sc8TSzX89mqKOZ3QReqDNxbnKz8Ys',
