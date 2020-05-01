@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\World;
 use App\WorldLog;
 use GeoHash;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -14,11 +15,15 @@ class WorldController extends Controller
     {
         $ip = $request->ip();
 
-        $response = Http::get('http://api.map.baidu.com/location/ip', [
-            'ak' => 'GC7Sc8TSzX89mqKOZ3QReqDNxbnKz8Ys',
-            'ip' => $ip,
-            'coor' => 'bd09ll'
-        ]);
+        try {
+            $response = Http::timeout(5)->get('http://api.map.baidu.com/location/ip', [
+                'ak' => 'GC7Sc8TSzX89mqKOZ3QReqDNxbnKz8Ys',
+                'ip' => $ip,
+                'coor' => 'bd09ll'
+            ]);
+        } catch (ConnectionException $connectionException) {
+            return view('message', ['message' => '垃圾百度地图，请求接口超时！']);
+        }
 
         if (!$response->successful()) {
             return view('message', ['message' => '垃圾百度地图，请求接口失败！']);
